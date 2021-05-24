@@ -12,7 +12,7 @@ public class Main {
     public static boolean cadenaterminada = false;
 
     public static void main(String[] args) throws IOException {
-        String pathToCsv = "src/move3.csv";
+        String pathToCsv = "src/move.csv";
         String pathTerminals = "src/terminals.csv";
 
         String row = "";
