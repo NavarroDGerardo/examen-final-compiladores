@@ -12,7 +12,7 @@ public class Main {
     public static boolean cadenaterminada = false;
 
     public static void main(String[] args) throws IOException {
-        String pathToCsv = "src/move.csv";
+        String pathToCsv = "src/move3.csv";
         String pathTerminals = "src/terminals.csv";
 
         String row = "";
@@ -40,19 +40,24 @@ public class Main {
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
         System.out.println("Agrega cadena a analizar por el NFA: ");
         String cadena = myObj.nextLine();
-        intermediateStack.push(0);
-        while (!cadena.equals("$")){
+
+        try{
+            intermediateStack.push(0);
+            while (!cadena.equals("$")){
+                while (!intermediateStack.isEmpty()){
+                    e_closure(intermediateStack.pop());
+                }
+                transition(cadena.charAt(0));
+                cadena = cadena.substring(1);
+            }
             while (!intermediateStack.isEmpty()){
                 e_closure(intermediateStack.pop());
             }
-            transition(cadena.charAt(0));
-            cadena = cadena.substring(1);
-        }
-        while (!intermediateStack.isEmpty()){
-            e_closure(intermediateStack.pop());
-        }
 
-        System.out.println(checkChain());
+            System.out.println(checkChain());
+        }catch (Exception ex){
+            System.out.println(false);
+        }
     }
 
     private static void transition(char c){
