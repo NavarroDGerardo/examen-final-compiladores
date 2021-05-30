@@ -25,7 +25,10 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        String pathToCsv = "src/move3.csv"; //ubicación del archivo move
+        //move3  -> (a|b)*abb
+        //move2 ->  axs(a|b)*(a|b)+bbs(z)+p
+
+        String pathToCsv = "src/move2.csv"; //ubicación del archivo move
         String pathTerminals = "src/terminals.csv";//ubicación del archivo terminales
 
         String row = ""; // string para almacenar las lineas del archivo csv
@@ -125,23 +128,46 @@ public class Main {
     }
 
     /**
-     * Transition es la función encargada de validar el caracter que se le esta pasando. Es el primer
+     * Transition valida el caracter que se le esta pasando. Es el primer
      * caracter del input del ususario y valida todos los estados en oldStates. los estados en
      * oldstates ya pasaron por la cerradura epsilon y se van a evaluar con el caracter c.
      * @param c el caracter c es el caracter inicial de la cadena que se va a evaluar con los estados
      */
     private static void transition(char c){
+        /*
+        * Se hace el procesdo de transicion por todos los estados que se encuentran en oldStates
+        * hasta que la pila este vacia.
+        */
         while (!oldStates.isEmpty()){
-            int state = oldStates.pop();
+            int state = oldStates.pop(); //estado al tope de la pila
+            /*
+            * revisamos sí el estado tiene transiciones en el caracter que se le paso
+            * para hacer esto revisamos sí en la tabla move el arreglo tiene una longuitud
+            * mayor o que el indice horizontal en el que se encuentra la letra.
+            */
             if(move.get(state + 1).length > alphabet.get(c)){
+                /*
+                * se vuelve a checar sí la longuitud del arreglo en la posición del caracter es mayor a 0,
+                * en caso contrario significaría que en ese estado no se encuentra ninguna transición procesando
+                * el caracter c.
+                */
                 if(move.get(state + 1)[alphabet.get(c)].length() > 0){
+                    //paths es el arreglo de Strings de los diferentes nodos que se puede llegar procesando c
                     String[] paths = move.get(state + 1)[alphabet.get(c)].split(" ");
+                    /*
+                    * Se itera sobre todos los Strings en paths para aplicar la cerradura epsilon en cada estado
+                    */
                     for(String s : paths){
+                        /*
+                        * Este es un if de caso especial, en caso de llegar a un estado superior del que esta en la
+                        * tabla, se aplica la cerradura epsilon con ese estado.
+                        */
                         if(Integer.parseInt(s) > alreadyOn.length){
-                            e_closure(Integer.parseInt(s));
+                            e_closure(Integer.parseInt(s));//se aplica cerradura epsilon en el estado s
                         }else {
+                            //checamos sí en la tabla de alreadyOn no estamos repitiendo estados.
                             if(!alreadyOn[Integer.parseInt(s)]){
-                                e_closure(Integer.parseInt(s));
+                                e_closure(Integer.parseInt(s));//se aplica cerradura epsilon en el estado s
                             }
                         }
                     }
@@ -149,37 +175,52 @@ public class Main {
             }
         }
 
+        /*
+         * una vez terminado de procesar todos los estados de oldStates
+         * estos pasaron a la pila de newStates, Iteramos sobre esta tabla
+         * para pasar cada estado de newStates a oldStates y marcar en el arreglo
+         * alreadyOn falso a todos los estados de oldstates.
+         */
         while (!newStates.isEmpty()) {
-            int state = newStates.pop();
-            oldStates.push(state);
-            alreadyOn[state] = false;
+            int state = newStates.pop(); //estado en el tope de la pila newState
+            oldStates.push(state); //se pushea el estado a la pila oldstates
+            alreadyOn[state] = false; // se pone false en la ubicación del estado en el arreglo
         }
     }
 
     /**
-     * e_closure es una función que recvive el id de un estado para ser evaludado con la cerradura epsilon.
-     *
-     * @param s se le pasa el est
+     * e_closure recive el id de un estado para ser evaludado con la cerradura epsilon.
+     * @param s se le pasa el estado a aplicar la cerradura epsilon
      */
     private static void e_closure(Integer s){
-        newStates.push(s);
-        alreadyOn[s] = true;
+        newStates.push(s);//se pushea el estado a la nueva pila newStates
+        alreadyOn[s] = true; //ponemos que el estado ya se ha visitado
+        /*
+        * checamos sí el estdo tiene transiciones epsilon, estas se encuentran en la ultima columna del archivo move
+        */
         if (move.get(s + 1).length == move.get(0).length) {
-            String aux = move.get(s + 1)[alphabet.get('ñ')];
-            String[] moves = aux.split(" ");
-            for (String t : moves) {
-                if (!alreadyOn[Integer.parseInt(t)]) {
-                    e_closure(Integer.parseInt(t));
+            String aux = move.get(s + 1)[alphabet.get('ñ')];//obtenemos todas las transiciones epsilon del estado
+            String[] moves = aux.split(" ");//separamos el string para analizar cada número
+            for (String t : moves) { //iteramos sobre las transiciones epsilon del estdo
+                if (!alreadyOn[Integer.parseInt(t)]) { //se checa sí no hemos repetido el estado para no entrar en ciclos infinitos
+                    e_closure(Integer.parseInt(t)); //se vuelve a aplicar la cerradura epsilon a los estados que llegamos con la transición epsilon
                 }
             }
         }
     }
 
+    /**
+     * checkChain revisa si en la pila de oldstates se encuentra un estado terminal
+     * en caso de encontrar un estado terminal en oldStates se puede decir que la
+     * cadena fue aceptada, en caso contrario es rechazada.
+     * @return boolean
+     */
     private static boolean checkChain(){
+        //mientras la pila no este vacia seguimos sacanso estados de ella
         while (!oldStates.isEmpty())
-            if(terminals.contains(oldStates.pop()))
+            if(terminals.contains(oldStates.pop())) //en caso de encontrar un estado que sea terminal se puede decir que el automata sí procesa la cadena de caracteres
                 return true;
-
+        //en caso de no encontrar ningún estado se regresa false diciendo que la cadena no puede ser procesada por el autmata.
         return false;
     }
 }
