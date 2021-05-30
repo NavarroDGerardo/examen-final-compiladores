@@ -26,7 +26,7 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
         //move3  -> (a|b)*abb
-        //move2 ->  axs(a|b)*(a|b)+bbs(z)+p
+        //move2 ->  axs(a|b)*(a|b)+bbszp
 
         String pathToCsv = "src/move2.csv"; //ubicación del archivo move
         String pathTerminals = "src/terminals.csv";//ubicación del archivo terminales
