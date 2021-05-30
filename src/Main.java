@@ -29,7 +29,7 @@ public class Main {
         //move2 ->  axs(a|b)*(a|b)+bbszp
 
         String pathToCsv = "src/move2.csv"; //ubicación del archivo move
-        String pathTerminals = "src/terminals.csv";//ubicación del archivo terminales
+        String pathTerminals = "src/terminals2.csv";//ubicación del archivo terminales
 
         String row = ""; // string para almacenar las lineas del archivo csv
         //BufferReader para leeer el arvhico con la tabla move del NFA
@@ -96,10 +96,10 @@ public class Main {
                 //Se hace la transicion epsilon por el estado 0 antes de inciiar la lectura del
                 e_closure(0);
                 /*
-                * la función e_closure pasa todos los estados a estados nuevos
-                * para poder hacer una correcta lectura tenemmos que pasar todos los estados de la pila de nuevos
-                * a viejos para su correcto funcionamiento.
-                * */
+                 * la función e_closure pasa todos los estados a estados nuevos
+                 * para poder hacer una correcta lectura tenemmos que pasar todos los estados de la pila de nuevos
+                 * a viejos para su correcto funcionamiento.
+                 * */
                 while (!newStates.isEmpty()) {
                     int state = newStates.pop(); // se saca el estado de la pila de newState
                     oldStates.push(state);//se agrega el estado a la pila de oldstate
@@ -114,8 +114,8 @@ public class Main {
                     cadena = cadena.substring(1);//se recorta la cadena en una subcadena sin el primer caracter
                 }
                 /*
-                * se imprime el resultado de sí la cadena es aceptada o no, para eso se llama a la función checkChain
-                */
+                 * se imprime el resultado de sí la cadena es aceptada o no, para eso se llama a la función checkChain
+                 */
                 System.out.println(checkChain());
             }catch (Exception ex){
                 //en caso de encontrar alguna excepción en el código se imprime false
@@ -135,33 +135,33 @@ public class Main {
      */
     private static void transition(char c){
         /*
-        * Se hace el procesdo de transicion por todos los estados que se encuentran en oldStates
-        * hasta que la pila este vacia.
-        */
+         * Se hace el procesdo de transicion por todos los estados que se encuentran en oldStates
+         * hasta que la pila este vacia.
+         */
         while (!oldStates.isEmpty()){
             int state = oldStates.pop(); //estado al tope de la pila
             /*
-            * revisamos sí el estado tiene transiciones en el caracter que se le paso
-            * para hacer esto revisamos sí en la tabla move el arreglo tiene una longuitud
-            * mayor o que el indice horizontal en el que se encuentra la letra.
-            */
+             * revisamos sí el estado tiene transiciones en el caracter que se le paso
+             * para hacer esto revisamos sí en la tabla move el arreglo tiene una longuitud
+             * mayor o que el indice horizontal en el que se encuentra la letra.
+             */
             if(move.get(state + 1).length > alphabet.get(c)){
                 /*
-                * se vuelve a checar sí la longuitud del arreglo en la posición del caracter es mayor a 0,
-                * en caso contrario significaría que en ese estado no se encuentra ninguna transición procesando
-                * el caracter c.
-                */
+                 * se vuelve a checar sí la longuitud del arreglo en la posición del caracter es mayor a 0,
+                 * en caso contrario significaría que en ese estado no se encuentra ninguna transición procesando
+                 * el caracter c.
+                 */
                 if(move.get(state + 1)[alphabet.get(c)].length() > 0){
                     //paths es el arreglo de Strings de los diferentes nodos que se puede llegar procesando c
                     String[] paths = move.get(state + 1)[alphabet.get(c)].split(" ");
                     /*
-                    * Se itera sobre todos los Strings en paths para aplicar la cerradura epsilon en cada estado
-                    */
+                     * Se itera sobre todos los Strings en paths para aplicar la cerradura epsilon en cada estado
+                     */
                     for(String s : paths){
                         /*
-                        * Este es un if de caso especial, en caso de llegar a un estado superior del que esta en la
-                        * tabla, se aplica la cerradura epsilon con ese estado.
-                        */
+                         * Este es un if de caso especial, en caso de llegar a un estado superior del que esta en la
+                         * tabla, se aplica la cerradura epsilon con ese estado.
+                         */
                         if(Integer.parseInt(s) > alreadyOn.length){
                             e_closure(Integer.parseInt(s));//se aplica cerradura epsilon en el estado s
                         }else {
@@ -196,8 +196,8 @@ public class Main {
         newStates.push(s);//se pushea el estado a la nueva pila newStates
         alreadyOn[s] = true; //ponemos que el estado ya se ha visitado
         /*
-        * checamos sí el estdo tiene transiciones epsilon, estas se encuentran en la ultima columna del archivo move
-        */
+         * checamos sí el estdo tiene transiciones epsilon, estas se encuentran en la ultima columna del archivo move
+         */
         if (move.get(s + 1).length == move.get(0).length) {
             String aux = move.get(s + 1)[alphabet.get('ñ')];//obtenemos todas las transiciones epsilon del estado
             String[] moves = aux.split(" ");//separamos el string para analizar cada número
