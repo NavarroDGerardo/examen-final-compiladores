@@ -4,8 +4,9 @@ import java.util.*;
 /**
  * Programa de validación de cadenas de caracteres
  * por medio de un NFA especificado en un archivo move
- * y otro archivo donde esten los terminales.
+ * y en otro archivo donde se especifican los estados terminales.
  *
+ * @version 1, 5/29/2021
  * @author Diego Gerardo Navarro González A01338941
  * @author Alan Rodrigo Mendoza Peréz A01112918
  */
@@ -91,30 +92,44 @@ public class Main {
             try{
                 //Se hace la transicion epsilon por el estado 0 antes de inciiar la lectura del
                 e_closure(0);
+                /*
+                * la función e_closure pasa todos los estados a estados nuevos
+                * para poder hacer una correcta lectura tenemmos que pasar todos los estados de la pila de nuevos
+                * a viejos para su correcto funcionamiento.
+                * */
                 while (!newStates.isEmpty()) {
-                    int state = newStates.pop();
-                    oldStates.push(state);
-                    alreadyOn[state] = false;
+                    int state = newStates.pop(); // se saca el estado de la pila de newState
+                    oldStates.push(state);//se agrega el estado a la pila de oldstate
+                    alreadyOn[state] = false; //se pone falso en la posisicón del arreglo de alreadyOn
                 }
                 /*
                  * mientras la cadena no sea igual a el caracter final seguimos procesando el input del usuario
                  * leyendo las transiciones del NFA y comprobando si pertenece o no
                  * */
                 while (!cadena.equals("$")){
-                    transition(cadena.charAt(0));
-                    cadena = cadena.substring(1);
+                    transition(cadena.charAt(0));//se procesa el primer caracter de la cadena
+                    cadena = cadena.substring(1);//se recorta la cadena en una subcadena sin el primer caracter
                 }
+                /*
+                * se imprime el resultado de sí la cadena es aceptada o no, para eso se llama a la función checkChain
+                */
                 System.out.println(checkChain());
             }catch (Exception ex){
+                //en caso de encontrar alguna excepción en el código se imprime false
                 System.out.println(false);
             }
         }else {
+            //en caso de no encontrar $ en el ultimo caracter de la cadena se le pide al usuario que la agregue
             System.out.println("ingrese la cadena con '$' al final para poder analizarlo correctamente");
         }
-
-
     }
 
+    /**
+     * Transition es la función encargada de validar el caracter que se le esta pasando. Es el primer
+     * caracter del input del ususario y valida todos los estados en oldStates. los estados en
+     * oldstates ya pasaron por la cerradura epsilon y se van a evaluar con el caracter c.
+     * @param c el caracter c es el caracter inicial de la cadena que se va a evaluar con los estados
+     */
     private static void transition(char c){
         while (!oldStates.isEmpty()){
             int state = oldStates.pop();
@@ -141,7 +156,11 @@ public class Main {
         }
     }
 
-
+    /**
+     * e_closure es una función que recvive el id de un estado para ser evaludado con la cerradura epsilon.
+     *
+     * @param s se le pasa el est
+     */
     private static void e_closure(Integer s){
         newStates.push(s);
         alreadyOn[s] = true;
