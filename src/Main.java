@@ -12,17 +12,35 @@ import java.util.*;
  */
 
 public class Main {
-    public static Stack<Integer> oldStates = new Stack<>(); //pila de antiguos estados ya analizados
-    public static Stack<Integer> newStates = new Stack<>(); //pila de nuevos estados a analizar
-    public static boolean[] alreadyOn; //arreglo de booleanos para ver sí el estado lo agregamos o no
-    public static HashMap<Character, Integer> alphabet = new HashMap<>(); //alfabeto del NFA
-    public static ArrayList<String[]> move  = new ArrayList<>(); // Lista de Strings con las transiciones del NFA
-    public static HashSet<Integer> terminals = new HashSet(); //Hashset de los terminales
+    /**
+     * pila de antiguos estados ya analizados
+     */
+    public static Stack<Integer> oldStates = new Stack<>();
+    /**
+     * pila de nuevos estados a analizar
+     */
+    public static Stack<Integer> newStates = new Stack<>();
+    /**
+     * arreglo de booleanos para ver sí el estado lo agregamos o no
+     */
+    public static boolean[] alreadyOn;
+    /**
+     * alfabeto del NFA
+     */
+    public static HashMap<Character, Integer> alphabet = new HashMap<>();
+    /**
+     * Lista de Strings con las transiciones del NFA
+     */
+    public static ArrayList<String[]> move  = new ArrayList<>();
+    /**
+     * Hashset de los terminales
+     */
+    public static HashSet<Integer> terminals = new HashSet();
 
     /**
      * método main para ejecutar el programa, aquí se ejecutara la lógica del programa
-     * @param args
-     * @throws IOException
+     * @param args array of strings
+     * @throws IOException in case the file is not find by the program
      */
     public static void main(String[] args) throws IOException {
         //move2 ->  axs(a|b)*(a|b)+bbszp
@@ -30,8 +48,8 @@ public class Main {
         //move4 ->  al(b|a*)*(b|a*)+asxl
         //move5 ->  alx(a|b*)*(b|a*)(a|b*)
 
-        String pathToCsv = "src/move5.csv"; //ubicación del archivo move
-        String pathTerminals = "src/terminals5.csv";//ubicación del archivo terminales
+        String pathToCsv = "src/move3.csv"; //ubicación del archivo move
+        String pathTerminals = "src/terminals3.csv";//ubicación del archivo terminales
 
         String row = ""; // string para almacenar las líneas del archivo csv
         //BufferReader para leer el archivo con la tabla move del NFA
@@ -135,7 +153,7 @@ public class Main {
      * oldstates ya pasaron por la cerradura epsilon y se van a evaluar con el caracter c.
      * @param c el caracter c es el caracter inicial de la cadena que se va a evaluar con los estados
      */
-    private static void transition(char c){
+    public static void transition(char c){
         /*
          * Se hace el proceso de transición por todos los estados que se encuentran en oldStates
          * hasta que la pila este vacia.
@@ -194,7 +212,7 @@ public class Main {
      * e_closure recibe el id de un estado para ser evaluado con la cerradura epsilon.
      * @param s se le pasa el estado a aplicar la cerradura epsilon
      */
-    private static void e_closure(Integer s){
+    public static void e_closure(Integer s){
         newStates.push(s);//se pushea el estado a la nueva pila newStates
         alreadyOn[s] = true; //ponemos que el estado ya se ha visitado
         /*
@@ -217,7 +235,7 @@ public class Main {
      * cadena fue aceptada, en caso contrario es rechazada.
      * @return boolean
      */
-    private static boolean checkChain(){
+    public static boolean checkChain(){
         //mientras la pila no este vacía seguimos sacanso estados de ella
         while (!oldStates.isEmpty())
             if(terminals.contains(oldStates.pop())) //en caso de encontrar un estado que sea terminal se puede decir que el automata sí procesa la cadena de caracteres
